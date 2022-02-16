@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Calendar\TimeTable;
 use App\Calendar\TimeTableCalendarFactory;
-use App\Helpers\Helper;
 use App\Models\Group;
-use Eluceo\iCal\Domain\ValueObject\Location;
-use Illuminate\Http\Response;
-use JetBrains\PhpStorm\NoReturn;
-use Eluceo\iCal\Domain\Entity\Event;
-use Eluceo\iCal\Domain\ValueObject\DateTime;
-use Eluceo\iCal\Domain\ValueObject\TimeSpan;
+use App\Models\Teacher;
 use Eluceo\iCal\Domain\Entity\Calendar;
+use Eluceo\iCal\Domain\Entity\Event;
+use Illuminate\Http\Response;
 
 class HomeController extends Controller
 {
@@ -26,48 +23,48 @@ class HomeController extends Controller
     }
 
     /**
-     * Returns the iCall data for calendars like Google calendar.
+     * Выводит календарь в формате iCall с расписанием группы
      *
      * @param Group $group
+     * @param string $format
      * @return Response
      */
-    #[NoReturn] public function calendar(Group $group): Response
+    public function groupCalendar(Group $group, string $format = TimeTable::TITLE_FORMAT_DEFAULT): Response
     {
-        $hours = $group->hours()
-            ->where('date', '>=', date("Y-m-d"))
-            ->with('subject')
-            ->with('type')
-            ->get();
+        $title = "Расписание пар " . $group->name;
+        return $this->printCalendar(TimeTable::getGroupEvents($group, $format), $title);
+    }
 
-        $timezone = new \DateTimeZone('UTC');
-        $location = new Location("Политехническая ул., 77, Главный к., Саратов, Саратовская обл., 410054");
-        $events = [];
-
-        foreach ($hours as $hour) {
-            $events[] = (new Event())
-                ->setSummary(sprintf("(%s) %s", $hour->type->short_name, $hour->subject->name))
-                ->setLocation($location)
-                ->setOccurrence(
-                    new TimeSpan(
-                        new DateTime(\DateTimeImmutable::createFromFormat('Y-m-d G:i',
-                            $hour->date . " " . Helper::getLessonStartTime($hour->time)
-                        )->setTimezone($timezone), false),
-                        new DateTime(\DateTimeImmutable::createFromFormat('Y-m-d G:i',
-                            $hour->date . " " . Helper::getLessonEndTime($hour->time)
-                        )->setTimezone($timezone), false)
-                    )
-                );
-        }
-
+    /**
+     * Создание и вывод календаря из массива событий
+     *
+     * @param Event[] $events массив событий
+     * @param string $title название календаря
+     * @return Response
+     */
+    private function printCalendar(iterable $events, string $title): Response
+    {
         $calendar = new Calendar($events);
 
-        $componentFactory = new TimeTableCalendarFactory(null, null,
-            "Расписание пар " . $group->name);
+        $componentFactory = new TimeTableCalendarFactory(null, null, $title);
         $calendarComponent = $componentFactory->createCalendar($calendar);
 
         header('Content-Type: text/calendar; charset=utf-8');
         header('Content-Disposition: attachment; filename="cal.ics"');
 
         return response($calendarComponent);
+    }
+
+    /**
+     * Выводит календарь в формате iCall с расписанием преподавателя
+     *
+     * @param Teacher $teacher
+     * @param string $format
+     * @return Response
+     */
+    public function teacherCalendar(Teacher $teacher, string $format = TimeTable::TITLE_FORMAT_DEFAULT): Response
+    {
+        $title = "Расписание пар " . $teacher->name;
+        return $this->printCalendar(TimeTable::getTeacherEvents($teacher, $format), $title);
     }
 }
