@@ -39,7 +39,7 @@ class Helper
 
     public static function requestFromSSTU($url): HtmlDomParser
     {
-//        return HtmlDomParser::str_get_html(file_get_contents("/var/www/rasp.rostkov.pro/public/2.html"));
+//        return HtmlDomParser::str_get_html(file_get_contents("/var/www/rasp.rostkov.pro/public/1.html"));
 
         $response = Http::get($url);
 

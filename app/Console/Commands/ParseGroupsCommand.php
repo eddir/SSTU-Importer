@@ -46,10 +46,7 @@ class ParseGroupsCommand extends Command
     {
         Log::info("Запускается сбор данных о группах в университете.");
 
-        $audiences = Auditory::all();
         $groups = Group::all();
-        $teachers = Teacher::all();
-        $subjects = Subject::all();
 
         $accordion = Helper::requestFromSSTU('https://rasp.sstu.ru/')->find('div[id=raspStructure]', 0);
 

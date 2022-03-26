@@ -16,3 +16,5 @@ yarn-error.log
 /.vscode
 composer.lock
 /artifacts/
+
+storage/logs/laravel.log
