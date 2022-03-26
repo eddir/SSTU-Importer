@@ -10,6 +10,10 @@ class Group extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['id', 'name', 'faculty', 'url'];
+
+    public $timestamps = false;
+
     public function hours(): HasMany
     {
         return $this->hasMany(Hour::class);

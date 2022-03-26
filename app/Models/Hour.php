@@ -10,6 +10,10 @@ class Hour extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['id', 'time', 'date', 'group_id', 'auditory_id', 'subject_id', 'type_id', 'teacher_id'];
+
+    public $timestamps = false;
+
     public function group(): BelongsTo
     {
         return $this->belongsTo(Group::class);

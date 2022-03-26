@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Auditory extends Model
 {
+    protected $fillable = ['id', 'name'];
+
+    public $timestamps = false;
 
     public function hours(): HasMany
     {

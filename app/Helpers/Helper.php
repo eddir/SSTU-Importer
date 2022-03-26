@@ -2,6 +2,11 @@
 
 namespace App\Helpers;
 
+use http\Exception\RuntimeException;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Database\Eloquent\Collection;
+use voku\helper\HtmlDomParser;
+
 class Helper
 {
     public static function getLessonStartTime(int $number): string
@@ -30,5 +35,18 @@ class Helper
             8 => "21:50",
             default => "9:30",
         };
+    }
+
+    public static function requestFromSSTU($url): HtmlDomParser
+    {
+//        return HtmlDomParser::str_get_html(file_get_contents("/var/www/rasp.rostkov.pro/public/2.html"));
+
+        $response = Http::get($url);
+
+        if ($response->failed()) {
+            throw new RuntimeException($response->reason());
+        }
+
+        return HtmlDomParser::str_get_html($response->body());
     }
 }
