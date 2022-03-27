@@ -16,8 +16,10 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('schedule:parse_changes')->daily();
-        $schedule->command('schedule:parse')->weekly();
-        $schedule->command('schedule:groups')->yearlyOn(9)->yearlyOn(2);
+        $schedule->command('schedule:parse')->weeklyOn(2);
+        $schedule->command('schedule:parse')->weeklyOn(6);
+        $schedule->command('schedule:groups')->yearlyOn(9);
+        $schedule->command('schedule:groups')->yearlyOn(2);
     }
 
     /**

@@ -25,7 +25,7 @@ class ParseGroupsCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Update the list of groups from the schedule';
+    protected $description = 'Update the list of groups from the schedule.';
 
     /**
      * Create a new command instance.
@@ -56,8 +56,8 @@ class ParseGroupsCommand extends Command
 
             # перебор групп
             foreach ($fac->find('a') as $group) {
-                $groupName = $group->text();
-                $url = explode("group/", $group->getAttribute('href'))[1];
+                $groupName = trim($group->text());
+                $url = trim(explode("group/", $group->getAttribute('href'))[1]);
                 $group = $groups->firstWhere('name', $groupName);
 
                 if ($group === null) {

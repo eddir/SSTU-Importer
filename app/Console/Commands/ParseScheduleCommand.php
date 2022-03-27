@@ -26,7 +26,7 @@ class ParseScheduleCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Parse the whole schedule and save all data';
+    protected $description = 'Parse the whole schedule and save all data.';
 
     /**
      * Create a new command instance.
@@ -81,14 +81,14 @@ class ParseScheduleCommand extends Command
 
                         foreach ($rooms_raw as $room) {
                             if (!empty($room->text()) && !str_contains($room->text(), "Подгр.")) {
-                                $rooms[] = $room->text();
+                                $rooms[] = trim($room->text());
                             }
                         }
 
                         $teachers = $hour_html->find(".lesson-teacher");
 
                         $teachers_current = array_map(function ($teacher) {
-                            return $teacher->text();
+                            return trim($teacher->text());
                         }, iterator_to_array($teachers));
 
                         $time = explode('n', $hour_html->getAttribute('data-lesson'))[1];
@@ -109,11 +109,11 @@ class ParseScheduleCommand extends Command
 
                             # Если такая аудитория ещё не существует в бд, то добавляем её. В любом случае мы
                             # должны получить id и вставить его вместе с другими данными в таблицу часов.
-                            $hour->auditory()->associate(Auditory::firstOrCreate(['name' => $rooms[$i]]));
+                            $hour->auditory()->associate(Auditory::firstOrCreate(['name' => trim($rooms[$i])]));
 
                             # Учебная дисциплина
                             $hour->subject()->associate(Subject::firstOrCreate(
-                                ['name' => $hour_html->find('.lesson-name', 0)->text()]
+                                ['name' => trim($hour_html->find('.lesson-name', 0)->text())]
                             ));
 
                             # Тип пары - практика, лекция или лабораторная работа
