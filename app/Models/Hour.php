@@ -34,4 +34,15 @@ class Hour extends Model
     {
         return $this->belongsTo(Type::class);
     }
+
+    public function compareTo(Hour $hour): bool
+    {
+        return $this->time == $hour->time
+            and $this->date == $hour->date
+            and $this->group->is($hour->group)
+            and $this->teacher->is($hour->teacher)
+            and $this->subject->is($hour->subject)
+            and $this->type->is($hour->type);
+    }
+
 }

@@ -50,6 +50,9 @@ class ParseScheduleCommand extends Command
         $groups = Group::all();
 
         foreach ($groups as $group) {
+            echo $group->name;
+            $time_start = microtime(true);
+
             $html = Helper::requestFromSSTU('https://rasp.sstu.ru/rasp/group/' . $group->url);
 
             # Не пустой ли календарь
@@ -66,10 +69,12 @@ class ParseScheduleCommand extends Command
                     $row_date = $day->find('.day-header', 0)->text();
                     preg_match("/\d.\.\d./", $row_date, $matched_date);
                     $date = explode(".", $matched_date[0]);
+                    $date = date("Y-$date[1]-$date[0]");
+
+                    $know_hours = Hour::where('date', $date)->where('group_id', $group->id)->get();
 
                     # Перебор часов
                     foreach ($day->find('.day-lesson') as $hour_html) {
-                        # Попробую объединить в одно ветвление без повторения кода
 
                         $rooms_raw = $hour_html->find('.lesson-room');
                         $rooms = [];
@@ -86,14 +91,18 @@ class ParseScheduleCommand extends Command
                             return $teacher->text();
                         }, iterator_to_array($teachers));
 
+                        $time = explode('n', $hour_html->getAttribute('data-lesson'))[1];
+
+                        # Занятия группы в данной паре (могут быть разделения по подгруппам)
+                        $hours = [];
                         for ($i = 0; $i < count($teachers_current); $i++) {
                             $hour = new Hour;
 
                             # Порядковый номер пары
-                            $hour->time = explode('n', $hour_html->getAttribute('data-lesson'))[1];
+                            $hour->time = $time;
 
                             # Дата проведения пары в формате Y-m-d
-                            $hour->date = date("Y-$date[1]-$date[0]");
+                            $hour->date = $date;
 
                             # Группа, у которой будет занятие
                             $hour->group()->associate($group);
@@ -115,15 +124,29 @@ class ParseScheduleCommand extends Command
                             # Преподаватель
                             $hour->teacher()->associate(Teacher::firstOrCreate(['name' => $teachers_current[$i]]));
 
-                            $hour->save();
+                            $hours[] = $hour;
                         }
 
+                        # Исключаем дубликаты из бд, если мы получили известные ранее даты.
+                        # Здесь нет отслеживания изменений, поскольку это бы сильно раздуло код. Для отслеживания нужно
+                        # перед запуском этой команды запускать команду schedule:parse-changes.
+                        foreach ($hours as $hour) {
+                            foreach ($know_hours as $know_hour) {
+
+                                # Не нужно сохранять в бд дубликаты
+                                if ($hour->compareTo($know_hour)) {
+                                    continue 2;
+                                }
+                            }
+                            # Дубликат не найден
+                            $hour->save();
+                        }
                     }
                 }
             }
 
-            usleep(300000);
-            echo "next";
+            echo " (", round((microtime(true) - $time_start)/60, 3), ")", PHP_EOL;
+            usleep(0.3 * 10**6);
         }
 
         return 0;
