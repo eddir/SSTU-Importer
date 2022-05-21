@@ -18,3 +18,5 @@ composer.lock
 /artifacts/
 
 storage/logs/laravel.log
+
+storage/framework/sessions/

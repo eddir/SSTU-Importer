@@ -3,6 +3,7 @@
 namespace App\Calendar;
 
 use App\Helpers\Helper;
+use App\Models\Auditory;
 use App\Models\Group;
 use App\Models\Teacher;
 use DateTimeImmutable;
@@ -25,7 +26,7 @@ class TimeTable
      * @param string $format
      * @return iterable
      */
-    public static function getGroupEvents(Group $group, string $format): iterable
+    public static function getGroupEvents(Group $group, string $format = self::TITLE_FORMAT_DEFAULT): iterable
     {
         return self::asEvents($group->hours()
             ->where('date', '>=', date("Y-m-d"))
@@ -82,9 +83,26 @@ class TimeTable
      * @param string $format
      * @return iterable
      */
-    public static function getTeacherEvents(Teacher $teacher, string $format): iterable
+    public static function getTeacherEvents(Teacher $teacher, string $format = self::TITLE_FORMAT_DEFAULT): iterable
     {
+        //TODO: а может сделать один общий метод и принимать на вход Scheduleable?
         return self::asEvents($teacher->hours()
+            ->where('date', '>=', date("Y-m-d"))
+            ->with('auditory', 'subject', 'type', 'group', 'teacher')
+            ->get(), $format
+        );
+    }
+
+    /**
+     * Список будущих пар в указанной аудитории
+     *
+     * @param Teacher $teacher
+     * @param string $format
+     * @return iterable
+     */
+    public static function getAuditoryEvents(Auditory $auditory, string $format = self::TITLE_FORMAT_DEFAULT): iterable
+    {
+        return self::asEvents($auditory->hours()
             ->where('date', '>=', date("Y-m-d"))
             ->with('auditory', 'subject', 'type', 'group', 'teacher')
             ->get(), $format

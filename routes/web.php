@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'HomeController@index');
-Route::get('/calendar/group/{group}/{format?}', 'HomeController@groupCalendar');
-Route::get('/calendar/teacher/{teacher}/{format?}', 'HomeController@teacherCalendar');
+Route::get('/', 'ScheduleController@index');
+Route::get('/group/{group}/', 'ScheduleController@group');
+Route::get('/teacher/{teacher}/', 'ScheduleController@teacher');
+Route::get('/auditory/{auditory}/', 'ScheduleController@auditory');
+
+Route::get('/calendar/group/{group}/{format?}', 'ICalController@groupCalendar');
+Route::get('/calendar/teacher/{teacher}/{format?}', 'ICalController@teacherCalendar');

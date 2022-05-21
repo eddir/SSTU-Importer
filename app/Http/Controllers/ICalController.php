@@ -10,17 +10,8 @@ use Eluceo\iCal\Domain\Entity\Calendar;
 use Eluceo\iCal\Domain\Entity\Event;
 use Illuminate\Http\Response;
 
-class HomeController extends Controller
+class ICalController extends Controller
 {
-    /**
-     * Show the application dashboard.
-     *
-     * @return Response
-     */
-    public function index(): Response
-    {
-        return response("Hello");
-    }
 
     /**
      * Выводит календарь в формате iCall с расписанием группы
