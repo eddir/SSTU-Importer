@@ -24,7 +24,7 @@ class HourFactory extends Factory
         return [
             'time' => $this->faker->numberBetween(1, 8),
             'date' => $this->faker->dateTimeThisMonth(),
-            'group_id' => Group::factory()->create()->id,
+//            'group_id' => Group::factory()->create()->id,
             'auditory_id' => Auditory::factory()->create()->id,
             'subject_id' => Subject::factory()->create()->id,
             'type_id' => Type::factory()->create()->id,
