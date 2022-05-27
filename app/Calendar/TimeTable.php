@@ -6,6 +6,7 @@ use App\Helpers\Helper;
 use App\Models\Auditory;
 use App\Models\Group;
 use App\Models\Teacher;
+use App\Repositories\ScheduleRepository;
 use DateTimeImmutable;
 use DateTimeZone;
 use Eluceo\iCal\Domain\Entity\Event;
@@ -22,17 +23,13 @@ class TimeTable
     /**
      * Список будущих пар группы
      *
-     * @param Group $group
+     * @param Teacher|Group|Auditory $subject
      * @param string $format
      * @return iterable
      */
-    public static function getGroupEvents(Group $group, string $format = self::TITLE_FORMAT_DEFAULT): iterable
+    public static function getEvents(Teacher|Group|Auditory $subject, string $format = self::TITLE_FORMAT_DEFAULT): iterable
     {
-        return self::asEvents($group->hours()
-            ->where('date', '>=', date("Y-m-d"))
-            ->with('auditory', 'subject', 'type', 'group', 'teacher')
-            ->get(), $format
-        );
+        return self::asEvents((new ScheduleRepository())->getCurrentsHours($subject), $format);
     }
 
     /**
@@ -74,38 +71,5 @@ class TimeTable
         }
 
         return $events;
-    }
-
-    /**
-     * Список будущих пар преподавателя
-     *
-     * @param Teacher $teacher
-     * @param string $format
-     * @return iterable
-     */
-    public static function getTeacherEvents(Teacher $teacher, string $format = self::TITLE_FORMAT_DEFAULT): iterable
-    {
-        //TODO: а может сделать один общий метод и принимать на вход Scheduleable?
-        return self::asEvents($teacher->hours()
-            ->where('date', '>=', date("Y-m-d"))
-            ->with('auditory', 'subject', 'type', 'group', 'teacher')
-            ->get(), $format
-        );
-    }
-
-    /**
-     * Список будущих пар в указанной аудитории
-     *
-     * @param Teacher $teacher
-     * @param string $format
-     * @return iterable
-     */
-    public static function getAuditoryEvents(Auditory $auditory, string $format = self::TITLE_FORMAT_DEFAULT): iterable
-    {
-        return self::asEvents($auditory->hours()
-            ->where('date', '>=', date("Y-m-d"))
-            ->with('auditory', 'subject', 'type', 'group', 'teacher')
-            ->get(), $format
-        );
     }
 }

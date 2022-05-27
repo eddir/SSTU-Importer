@@ -23,7 +23,7 @@ class ICalController extends Controller
     public function groupCalendar(Group $group, string $format = TimeTable::TITLE_FORMAT_DEFAULT): Response
     {
         $title = "Расписание пар " . $group->name;
-        return $this->printCalendar(TimeTable::getGroupEvents($group, $format), $title);
+        return $this->printCalendar(TimeTable::getEvents($group, $format), $title);
     }
 
     /**
@@ -56,6 +56,6 @@ class ICalController extends Controller
     public function teacherCalendar(Teacher $teacher, string $format = TimeTable::TITLE_FORMAT_DEFAULT): Response
     {
         $title = "Расписание пар " . $teacher->name;
-        return $this->printCalendar(TimeTable::getTeacherEvents($teacher, $format), $title);
+        return $this->printCalendar(TimeTable::getEvents($teacher, $format), $title);
     }
 }

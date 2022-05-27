@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', 'ScheduleController@index');
-Route::get('/group/{group}/', 'ScheduleController@group');
 Route::get('/teacher/{teacher}/', 'ScheduleController@teacher');
 Route::get('/auditory/{auditory}/', 'ScheduleController@auditory');
 
