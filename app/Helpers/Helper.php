@@ -37,7 +37,7 @@ class Helper
         };
     }
 
-    public static function requestFromSSTU($url): HtmlDomParser
+    public static function getHtmlFromURL($url): HtmlDomParser
     {
 //        $address = match ($url) {
 //            "https://rasp.sstu.ru/rasp/department/0" => "/var/www/rasp.rostkov.pro/public/3.html",

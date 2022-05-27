@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Helpers\Helper;
+use App\Helpers\Parser;
 use App\Models\Auditory;
 use App\Models\Group;
 use App\Models\Subject;
@@ -46,44 +47,7 @@ class ParseGroupsCommand extends Command
     {
         Log::info("Запускается сбор данных о группах в университете.");
 
-        $groups = Group::all();
-
-        $accordion = Helper::requestFromSSTU('https://rasp.sstu.ru/')->find('div[id=raspStructure]', 0);
-
-        # Перебор институтов
-        foreach ($accordion->children() as $fac) {
-            $facName = trim($fac->find('.card-header', 0)->text());
-
-            # перебор групп
-            foreach ($fac->find('a') as $group) {
-                $groupName = trim($group->text());
-                $url = trim(explode("group/", $group->getAttribute('href'))[1]);
-                $group = $groups->firstWhere('name', $groupName);
-
-                if ($group === null) {
-                    try {
-                        $group_data = [
-                            'name' => $groupName,
-                            'faculty' => $facName,
-                            'url' => $url
-                        ];
-
-                        $group = Group::create($group_data);
-                        $group->save();
-                        $groups->push($group);
-                    } catch (Exception $error) {
-                        echo $error->getMessage(), PHP_EOL;
-                    }
-                } elseif ($url != $group->url) {
-                    try {
-                        $group->url = $url;
-                        $group->save();
-                    } catch (Exception $error) {
-                        echo $error->getMessage(), PHP_EOL;
-                    }
-                }
-            }
-        }
+        Parser::parseGroups(Helper::getHtmlFromURL(config('services.sstu.homepage_url')));
         return 0;
     }
 }

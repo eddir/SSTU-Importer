@@ -53,8 +53,8 @@ class ParseScheduleChangesCommand extends Command
 
         # 1. получили [Дисциплина, препод, аудитория, время]
         # 2. получаем по этим данным [группы] из room/0
-        $department_html = Helper::requestFromSSTU('https://rasp.sstu.ru/rasp/department/0');
-        $room_html = Helper::requestFromSSTU('https://rasp.sstu.ru/rasp/room/0');
+        $department_html = Helper::getHtmlFromURL('https://rasp.sstu.ru/rasp/department/0');
+        $room_html = Helper::getHtmlFromURL('https://rasp.sstu.ru/rasp/room/0');
 
         # Для каждого препода пройтись по каждой паре. Проверить наличие этой пары в бд.
         # Пара есть: проверить атрибуты

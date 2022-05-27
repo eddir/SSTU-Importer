@@ -30,4 +30,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'sstu' => [
+        'homepage_url' => env('SCHEDULE_HOMEPAGE', 'https://rasp.sstu.ru/'),
+        'group_url' => env('SCHEDULE_GROUP', 'https://rasp.sstu.ru/'),
+        'teacher_url' => env('SCHEDULE_TEACHER', 'https://rasp.sstu.ru/'),
+        'auditory_url' => env('SCHEDULE_AUDITORY', 'https://rasp.sstu.ru/'),
+    ]
 ];

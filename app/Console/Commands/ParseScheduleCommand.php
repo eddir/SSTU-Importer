@@ -53,7 +53,7 @@ class ParseScheduleCommand extends Command
             echo $group->name;
             $time_start = microtime(true);
 
-            $html = Helper::requestFromSSTU('https://rasp.sstu.ru/rasp/group/' . $group->url);
+            $html = Helper::getHtmlFromURL('https://rasp.sstu.ru/rasp/group/' . $group->url);
 
             # Не пустой ли календарь
             $weeks = $html->find('.week');
