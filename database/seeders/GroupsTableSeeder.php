@@ -11,7 +11,7 @@ class GroupsTableSeeder extends Seeder
     public function run()
     {
         Group::factory(5)->create()->each(function ($g) {
-            $g->hours(20)->create(['group_id' => $g->id]);
+            Hour::factory(20)->create(['group_id' => $g->id]);
         });
     }
 }

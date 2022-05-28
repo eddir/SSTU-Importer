@@ -7,6 +7,7 @@ use App\Models\Group;
 use App\Models\Subject;
 use App\Models\Teacher;
 use App\Models\Type;
+use DateTime;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -23,7 +24,7 @@ class HourFactory extends Factory
     {
         return [
             'time' => $this->faker->numberBetween(1, 8),
-            'date' => $this->faker->dateTimeThisMonth(),
+            'date' => $this->faker->dateTimeInInterval('-7 days', '+10 days')->format('Y-m-d'),
 //            'group_id' => Group::factory()->create()->id,
             'auditory_id' => Auditory::factory()->create()->id,
             'subject_id' => Subject::factory()->create()->id,

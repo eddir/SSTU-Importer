@@ -2,7 +2,7 @@
 
 namespace App\Helpers;
 
-use http\Exception\RuntimeException;
+use RuntimeException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Database\Eloquent\Collection;
 use voku\helper\HtmlDomParser;
