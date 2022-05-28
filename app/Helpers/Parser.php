@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\Group;
+use Exception;
 use voku\helper\HtmlDomParser;
 
 class Parser
