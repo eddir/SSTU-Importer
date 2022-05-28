@@ -14,7 +14,7 @@ class CreateHoursTable extends Migration
     public function up()
     {
         Schema::create('hours', function (Blueprint $table) {
-            $table->integer('id')->primary();
+            $table->id();
             $table->unsignedTinyInteger('time');
             $table->date('date');
             $table->unsignedSmallInteger('group_id');

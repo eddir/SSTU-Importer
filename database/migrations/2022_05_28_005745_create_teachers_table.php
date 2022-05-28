@@ -14,7 +14,7 @@ class CreateTeachersTable extends Migration
     public function up()
     {
         Schema::create('teachers', function (Blueprint $table) {
-            $table->smallIncrements('id')->unsigned()->primary();
+            $table->id();
             $table->string('name', 64);
         });
     }

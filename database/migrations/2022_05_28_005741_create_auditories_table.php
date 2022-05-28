@@ -14,7 +14,7 @@ class CreateAuditoriesTable extends Migration
     public function up()
     {
         Schema::create('auditories', function (Blueprint $table) {
-            $table->smallIncrements('id')->unsigned()->primary();
+            $table->id();
             $table->text('name');
         });
     }
